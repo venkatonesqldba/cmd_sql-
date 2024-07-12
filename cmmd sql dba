@@ -1,0 +1,163 @@
+commands 
+------------------------
+create database name                 ------------------------>>>creating db
+select  *from sys.sysaltfiles          --------------------------->>> To shows all details for instance
+
+  imp---command----
+     select *from sys.databases          -------------------->>> to shows all databes and rm and backups
+
+    select name,recovery_model_desc from sys.databases -----it shows only RM and DB Names
+
+
+select  *from sys.sysdatabase      ------------------->>>
+select *from sys.master_files       ------------------->>>
+
+sp_helpfile                                  ------------------->>>
+sp_helpdb                                    ----------------------->>> it shows all db details and size details
+sp_help 'dbname'                        -------->>> it shows perticular db name details
+sp_readerrorlog                           --------->>>>> it will shows error log details
+select @@version                       ------->>> 
+
+ 
+select SERVERPROPERTY('productversion') ------------>>>>>
+select SERVERPROPERTY('productlevel')   ------------------>>>>
+
+------------------------------------------------------------------------------------------------------
+
+sp_who  ------------>>>
+sp_who2 ----------->>>
+sp_who2 active -------->>>
+
+
+sp_whoisactive                  ------>>>     sp_who is active procedure download -------go from goggle
+sp_who idnumber         ------------>>>
+sp_who2 idnumber       ------------>>>
+----------------------------------------------------------------------------------------------------------------
+select *from table name       -----------------               SELECT * FROM fffffff    -------------it shows all rows and colums 
+DELETE FROM fffffff WHERE sno = 9   ------------- it was delete perticular one row 
+
+----------{------- Cannot drop database "dbname" because it is currently in use.-------------------
+--------------------------------------------------------------------------------------------------------
+                                  select *from sys.sysprocess where DBid = DB_id 'DBname' ------}
+---------------------------------------------------------------------------------------------------------
+change the recovery models commands
+-----------------------------------------------
+ALTER DATABASE OLA SET RECOVERY FULL                                                 
+ALTER DATABASE OLA SET RECOVERY BULK_LOGGED
+ALTER DATABASE OLA SET RECOVERY SIMPLE
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------------------------------------
+
+     DATA BASE ACESS MODE CHANGE COMMANDS
+--------------------------------------------------------------
+ALTER DATABASE [OLA] SET  MULTI_USER  ----------
+ALTER DATABASE [OLA] SET  single_USER   ---------
+ALTER DATABASE [OLA] SET restricted _USER  --------
+
+---------------------------------------------------------------------
+       ---------- BACK UP -----RESTORE-----
+
+backup database [kalki] to disk='F:\Backup\kalki_05052024_0940.bak'
+restore database [kalki] from disk='F:\Backup\kalki_05052024_0940.bak'
+
+backup database [samba] to disk='F:\Backup\samba_07082024.diff'
+
+
+-----------------------------------------------------------------------------------
+                      MIRROR BACK UP 
+ 
+Backup database samba to disk ='F:\collage backup samba_06072024_12.33pm.bak' mirror to disk ='F:\ssp samba_06072024_12.33pm.bak'with format
+
+--------------------------------------------------------------------------------------------------
+                           SPILT backup
+
+backup database OLA to disk='F:\New folder\folder one\spilt backup,part1.bak', disk='E:\New folder\New\folder backup spilt, part2.bak'
+-----------------------------------------------------------------------------------------------------
+                                 Tail backup ---
+                                                              IF ANY  DB CRASHESS
+                             only log file purpose  ( TRUNCATE command will not apply DB )
+---------------------------------------------------------------------------------------------------------
+
+           
+                              EXAMPLES OF Backup AND Restore
+--------------------------------------------------------------------------                                                                                    backup database [TATA] to disk='E:\New folder full\backup full_10082024_2.25pm.bak'
+
+
+backup database [samba] to disk='F:\Backup\samba_07082024.bak'     ====== DB ONLY APPLY  FULL BACKUP               backup database [TATA] to disk='E:\New folder diff\backup diff_10082024_2.25pm.bak'
+
+backup database [samba] to disk='F:\Backup\samba_07082024.diff'    ======  DB ONLY APPLY DIFF BACKUP 
+
+backup log [samba] to disk='F:\Backup\samba_07082024.trn'      ======           DB ONLY APPY LOG BACKUP
+
+backup database [samba] to disk='F:\Backup\samba_07082024.with copy_only' =====DB ONLY APPY COPY BACKUP
+----------------------------------------------------------------------------------------------------------------------------------------
+                                      DB   CHECKING
+----------------------------------------------------------------------------------------------------------------------------------
+restore verifyonly  from disk='F:\Backup\samba_07082024.bak'       ===       DB VERIFICATION 
+
+restore filelistonly  from disk='F:\Backup\spider_07082024.bak'       ===         DB FILELIST 
+
+restore headeronly  from disk='F:\Backup\spider_07082024.bak'     ====        DB HEADER 
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+select percent_complete,*from sys.dm_exec_requests where session_id=79  ============
+                            ALL DATABASESS
+------------------------------------------------------------------------
+1.how to take backup of all databases in sql server
+2.
+DECLARE @name NVARCHAR(256) -- database name  
+DECLARE @path NVARCHAR(512) -- path for backup files  
+DECLARE @fileName NVARCHAR(512) -- filename for backup  
+DECLARE @fileDate NVARCHAR(40) -- used for file name
+ 
+-- specify database backup directory
+SET @path = 'F:\Backup\09072024\'  
+ 
+-- specify filename format
+SELECT @fileDate = CONVERT(NVARCHAR(20),GETDATE(),112) 
+ 
+DECLARE db_cursor CURSOR READ_ONLY FOR  
+SELECT name 
+FROM master.sys.databases 
+WHERE name NOT IN('master','model','msdb','tempdb')  -- exclude these databases
+AND state = 0 -- database is online
+AND is_in_standby = 0 -- database is not read only for log shipping
+ 
+OPEN db_cursor   
+FETCH NEXT FROM db_cursor INTO @name   
+ 
+WHILE @@FETCH_STATUS = 0   
+BEGIN   
+   SET @fileName = @path + @name + '_' + @fileDate + '.BAK'  
+   BACKUP DATABASE @name TO DISK = @fileName  
+ 
+   FETCH NEXT FROM db_cursor INTO @name   
+END   
+ 
+CLOSE db_cursor   
+DEALLOCATE db_cursor
+
+
+==================================================
+
+  ===== BACKUP DATABASE [diploma] TO  DISK = N'F:\Backup\09072024\diploma_backup_2024_07_09_100326_9826335.bak' WITH STATS = 10
+=====  select percent_complete,*from sys.dm_exec_requests where session_id=79
+
+--NOFORMAT, 
+--NOINIT,  
+--NAME = N'diploma_backup_2024_07_09_100326_9826335', 
+--SKIP, 
+--REWIND, 
+--NOUNLOAD, 
+====================================================
+
+
+restore database [TATA] with recovery  =======
+
+
+select *from sys.sysdatabases where dbid=db_id ('TDP') kill 30
